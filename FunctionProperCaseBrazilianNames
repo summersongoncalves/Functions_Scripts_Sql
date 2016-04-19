@@ -1,0 +1,40 @@
+
+
+-- ==========================================================================================
+-- Author:		SUMMERSON DE SOUZA GONÇALVES
+-- Create date: 18/04/2016
+-- Description:	FUNCTION RECEBE UMA STRING (NOME COMPLETO) EM QUALQUER FORMATO UPPER OU LOWER CASE
+	--          RETORNANDO A STRING FORMATADA CORRETAMENTE
+	-- EX: JOãO De sOuZa DA coSTA
+-- Retorna: João de Souza da Costa
+-- ==========================================================================================
+
+
+CREATE FUNCTION dbo.formata_nome(
+		@nome AS Varchar(MAX)
+	)
+RETURNS Varchar(MAX)
+AS BEGIN
+
+ Declare @pos   int,
+		 @nomeFormatado  as varchar(max),
+		 @tamanho   int
+		
+	set @pos = 1
+	set @tamanho = len(@nome)+1
+	set @nomeFormatado = lower(@nome)
+	WHILE(@pos < @tamanho)
+		BEGIN	
+			if @pos = 1 begin
+				set @nomeFormatado = stuff(@nomeFormatado,@pos,@pos,Upper(Substring(@nomeFormatado,1,1)))	
+				set @pos = @pos + 1 
+			end
+			else begin
+			if (SUBSTRING(@nomeFormatado,@pos-1,1)=' ')AND ((SUBSTRING(@nomeFormatado,@pos+3,1) <> ' ' ))
+			    IF SUBSTRING(@nomeFormatado,@pos+2,1) <> ' '
+				set @nomeFormatado =  stuff(@nomeFormatado,@pos,1, UPPER(SUBSTRING(@nomeFormatado,@pos,1)))
+			end
+				set @pos = @pos +1
+		END
+	RETURN @nomeFormatado
+END
